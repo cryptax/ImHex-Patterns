@@ -42,6 +42,12 @@ namespace type {
 	
 }
 
+struct DartString {
+    u64 doubleLength [[hidden]];
+    u64 length = doubleLength / 2 [[export]];
+    char content[length]; // this string is not null terminated
+};
+
 enum SnapshotKind : u64 {
     kFull = 0,      // Full snapshot of core libraries or an application.
     kFullJIT = 1,   // Full + JIT code
@@ -121,3 +127,4 @@ struct DartSnapshotHeader {
     u8 version_hash[32];
     char features[]; // null terminated
 };
+
