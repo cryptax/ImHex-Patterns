@@ -154,24 +154,13 @@ struct myshit {
 
 myshit myshit_at_0x235DC @ 0x235DC;
 
-
 DartString dartstring_at_0x350D0 @ 0x350D0;
-DartString dartstring_at_0x350B0 @ 0x350B0;
-DartString dartstring_at_0x350F0 @ 0x350F0;
-DartString dartstring_at_0x35130 @ 0x35130;
-DartString dartstring_at_0x35160 @ 0x35160;
-DartString dartstring_at_0x35190 @ 0x35190;
-DartString dartstring_at_0x35990 @ 0x35990;
-DartString dartstring_at_0x361A0 @ 0x361A0;
-DartString dartstring_at_0x36260 @ 0x36260;
-DartString dartstring_at_0x37D70 @ 0x37D70;
-DartString dartstring_at_0x40D90 @ 0x40D90;
-DartString dartstring_at_0x40DB0 @ 0x40DB0;
-DartString dartstring_at_0x40DD0 @ 0x40DD0;
-DartString dartstring_at_0x41160 @ 0x41160;
-DartString dartstring_at_0x41B10 @ 0x41B10;
-DartString dartstring_at_0x41B90 @ 0x41B90;
-DartString dartstring_at_0x4D790 @ 0x4D790;
-DartString dartstring_at_0x4D9D0 @ 0x4D9D0;
-DartString dartstring_at_0x28B00 @ 0x28B00;
-DartString dartstring_at_0x39AF0 @ 0x39AF0;
+
+struct OffsetToIsolate {
+    u32 offset;
+};
+
+
+OffsetToIsolate offsettoisolate_at_0x1000 @ 0x1000;
+
+DartSnapshotHeader isolate @ $ + offsettoisolate_at_0x1000.offset -4;
