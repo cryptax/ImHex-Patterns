@@ -163,4 +163,4 @@ struct OffsetToIsolate {
 // first snapshot
 DartSnapshotHeader vmsnapshot @ 0x200;
 OffsetToIsolate offset2isolate @ $ + vmsnapshot.size - 0xc6 + 16*4;
-//DartSnapshotHeader isolate = offset2isolate.offset;
+DartSnapshotHeader isolate @ addressof(offset2isolate.offset);
