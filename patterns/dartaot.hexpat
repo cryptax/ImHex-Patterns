@@ -1,5 +1,6 @@
 #include <std/io.pat>
 #include <std/mem.pat>
+#include <std/ptr.pat>
 
 namespace type {
     /* Dart uses a custom LEB128 type which stops when most significant bit is 1 instead of 0 */
@@ -151,16 +152,15 @@ struct myshit {
     DartShit values[831];
 };
 
-
 myshit myshit_at_0x235DC @ 0x235DC;
 
 DartString dartstring_at_0x350D0 @ 0x350D0;
 
 struct OffsetToIsolate {
-    u32 offset;
+    DartSnapshotHeader *offset: u32 [[pointer_base("std::ptr::relative_to_pointer")]];
 };
 
-
-OffsetToIsolate offsettoisolate_at_0x1000 @ 0x1000;
-
-DartSnapshotHeader isolate @ $ + offsettoisolate_at_0x1000.offset -4;
+// first snapshot
+DartSnapshotHeader vmsnapshot @ 0x200;
+OffsetToIsolate offset2isolate @ $ + vmsnapshot.size - 0xc6 + 16*4;
+//DartSnapshotHeader isolate = offset2isolate.offset;
