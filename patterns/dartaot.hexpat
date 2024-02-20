@@ -3,7 +3,7 @@
 #include <std/ptr.pat>
 
 namespace type {
-    /* Dart uses a custom LEB128 type which stops when most significant bit is 1 instead of 0 */
+        /* Dart uses a custom LEB128 type which stops when most significant bit is 1 instead of 0 */
 	struct DartUnsignedBase {
         u8 array[while($ == addressof(this) || $[$-1] & 0x80 == 0)] [[hidden]];
 	} [[sealed]];
@@ -46,25 +46,22 @@ namespace type {
 struct DartString {
     u32 tag;
     u32 unknown;
-    u64 doubleLength [[hidden]];
-    u64 length = doubleLength / 2 [[export]];
+    u64 doubleLength [[hidden]]; // the format actually shows a SMI for the length
+    u64 length = doubleLength / 2 [[export]]; // Divide SMI by 2
     char content[length]; // this string is not null terminated
 };
 
 enum SnapshotKind : u64 {
-    kFull = 0,      // Full snapshot of core libraries or an application.
-    kFullJIT = 1,   // Full + JIT code
-    kFullAOT = 2,   // Full + AOT code
-    kMessage = 3,   // A partial snapshot used only for isolate messaging.
-    kNone = 4,      // gen_snapshot
+    kFull = 0,      	// Full snapshot of core libraries or an application.
+    kFullJIT = 1,   	// Full + JIT code
+    kFullAOT = 2,   	// Full + AOT code
+    kMessage = 3,   	// A partial snapshot used only for isolate messaging.
+    kNone = 4,      	// gen_snapshot
     kInvalid = 5
 };
 
 enum ClassId : s32 {
-  kIllegalCid = 0,
-  kNativePointer,
-  kFreeListElement,
-  kForwardingCorpse,
+  kIllegalCid = 0,  kNativePointer, kFreeListElement,  kForwardingCorpse,
   kObjectCid, kClassCid, kPatchClassCid, kFunctionCid, kTypeParametersCid, kClosureDataCid, kFfiTrampolineDataCid, 
   kFieldCid, kScriptCid, kLibraryCid, kNamespaceCid, kKernelProgramInfoCid, kWeakSerializationReferenceCid, 
   kWeakArrayCid, kCodeCid, kInstructionsCid, kInstructionsSectionCid, kInstructionsTableCid, kObjectPoolCid, 
@@ -100,28 +97,18 @@ enum ClassId : s32 {
   kExternalTypedDataFloat32x4ArrayCid, kUnmodifiableTypedDataFloat32x4ArrayViewCid, kTypedDataInt32x4ArrayCid, 
   kTypedDataInt32x4ArrayViewCid, kExternalTypedDataInt32x4ArrayCid, kUnmodifiableTypedDataInt32x4ArrayViewCid, 
   kTypedDataFloat64x2ArrayCid, kTypedDataFloat64x2ArrayViewCid, kExternalTypedDataFloat64x2ArrayCid, 
-  kUnmodifiableTypedDataFloat64x2ArrayViewCid,
-  kByteDataViewCid,
-  kUnmodifiableByteDataViewCid,
-  kByteBufferCid,
-  kNullCid,
-  kDynamicCid,
-  kVoidCid,
-  kNeverCid,
-  kNumPredefinedCids,
+  kUnmodifiableTypedDataFloat64x2ArrayViewCid,   kByteDataViewCid,  kUnmodifiableByteDataViewCid,  kByteBufferCid,
+  kNullCid,  kDynamicCid,  kVoidCid,  kNeverCid,  kNumPredefinedCids,
 };
 
 
 struct ClusterInfo {
-    type::DartUnsigned baseObjCount;
-    type::DartUnsigned objCount;
-    type::DartUnsigned clusterCount;
-    type::DartUnsigned codeOrderLength;
+    type::DartUnsigned baseObjCount [[comment("Number of base objects")]];
+    type::DartUnsigned objCount [[comment("Number of objects")]];	
+    type::DartUnsigned clusterCount [[comment("Number of clusters")]];
+    type::DartUnsigned codeOrderLength;	
 };
 
-struct ClusterAlloc {
-    ClassId classId;
-};
 
 struct DartSnapshotHeader {
     u8 magic[4];    // F5F5DCDC
@@ -132,35 +119,19 @@ struct DartSnapshotHeader {
 };
 
 
-DartSnapshotHeader dartsnapshotheader_at_0x85C0 @ 0x85C0;
-ClusterInfo clusterinfo_at_0x8687 @ 0x8687;
-
-
-struct myunsigneds {
-    type::DartUnsigned values[10000];
-};
-
-
-myunsigneds myunsigneds_at_0x8691 @ 0x8691;
-
-struct DartShit {
-    u32 length;
-    u8 data[length >> 2];
-};
-
-struct myshit {
-    DartShit values[831];
-};
-
-myshit myshit_at_0x235DC @ 0x235DC;
-
-DartString dartstring_at_0x350D0 @ 0x350D0;
-
 struct OffsetToIsolate {
     DartSnapshotHeader *offset: u32 [[pointer_base("std::ptr::relative_to_pointer")]];
 };
 
 // first snapshot
 DartSnapshotHeader vmsnapshot @ 0x200;
-OffsetToIsolate offset2isolate @ $ + vmsnapshot.size - 0xc6 + 16*4;
-DartSnapshotHeader isolate @ addressof(offset2isolate.offset);
+
+//OffsetToIsolate offset2isolate @ $ + vmsnapshot.size - 0xc6 + 16*4;
+//DartSnapshotHeader isolate @ addressof(offset2isolate.offset);
+
+DartSnapshotHeader isolatesnapshot @ 0x8740;
+ClusterInfo isolate_cluster_info @ 0x8807;
+DartString dartstring_at_0x29190 @ 0x29190;
+DartString dartstring_at_0x291c0 @ 0x291c0;
+DartString dartstring_at_0x291e0 @ 0x291e0;
+DartString dartstring_at_0x280a0 @ 0x280a0;
